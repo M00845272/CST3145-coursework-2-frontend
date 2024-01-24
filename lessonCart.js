@@ -218,13 +218,13 @@ var webstore = new Vue({
       if (!parseInt(price)) { return ""; }
       if (price > 99999) {
         var priceString = (price / 100).toFixed(2);
-        var priceArray = priceString.split("").reverse();	
+        var priceArray = priceString.split("").reverse();
         var index = 3;
         while (priceArray.length > index + 3) {
           priceArray.splice(index + 3, 0, ",");
           index += 4;
         }
-        return "£" + priceArray.reverse().join("");	
+        return "£" + priceArray.reverse().join("");
       } else {
         return "£" + (price / 100).toFixed(2);	//#H
       }
@@ -232,10 +232,15 @@ var webstore = new Vue({
 
   },
   created: function () {
-    axios.get('./lessons.json')
-      .then((response) => {
-        this.lessons = response.data.lessons;
-        console.log(this.lessons);
-      });
+    fetch("http://localhost:3000/lessons").then(
+      function (response) {
+        response.json().then(
+          function (json) {
+            console.log(json);
+            webstore.lessons = json;
+          }
+        )
+      }
+    );
   }
 });
