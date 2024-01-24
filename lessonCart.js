@@ -134,10 +134,51 @@ var webstore = new Vue({
       this.showLesson = this.showLesson ? false : true;
     },
     submitForm() {
-      alert('Order Placed Successfully');
-      this.cart = [];
-      this.showLesson = true;
-      this.order = this.getDefaultOrderDetails();
+      let lessons = {};
+      webstore.cart.forEach(function (lessonId) {
+        // If the lesson is not already a key, initialize it with count 1
+        if (!lessons[lessonId]) {
+          lessons[lessonId] = 1;
+        } else {
+          // If the lesson is already a key, increment the count
+          lessons[lessonId]++;
+        }
+      });
+
+      let orderDetails = {
+        "firstName": webstore.order.firstName,
+        "lastName": webstore.order.lastName,
+        "email": webstore.order.email,
+        "phoneNumber": webstore.order.phone,
+        "lessons": lessons
+      }
+      // Send POST request using Fetch API
+      fetch('http://localhost:3000/order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderDetails),
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Order created successfully:', data);
+          webstore.cart = [];
+          webstore.showLesson = true;
+          webstore.order = this.getDefaultOrderDetails();
+          alert('Order Placed Successfully');
+          // Handle success response
+        })
+        .catch(error => {
+          console.error('Error creating order:', error);
+          alert('Error creating order');
+          // Handle error
+        });
     },
     canAddToCart(aLesson) {
       return aLesson.availableInventory > this.cartCount(aLesson.id);
