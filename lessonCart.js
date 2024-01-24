@@ -171,13 +171,35 @@ var webstore = new Vue({
           webstore.cart = [];
           webstore.showLesson = true;
           webstore.order = this.getDefaultOrderDetails();
+          webstore.updateAvailableSpaces(lessons);
           alert('Order Placed Successfully');
-          // Handle success response
+          webstore.getLessons();
         })
         .catch(error => {
           console.error('Error creating order:', error);
           alert('Error creating order');
-          // Handle error
+        });
+    },
+    updateAvailableSpaces(cart) {
+       // Send PUT request using Fetch API
+       fetch('http://localhost:3000/lesson/update_availability', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cart),
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Available spaces updated successfully:', data);
+        })
+        .catch(error => {
+          console.error('Error updating available spaces:', error);
         });
     },
     canAddToCart(aLesson) {
