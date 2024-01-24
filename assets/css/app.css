@@ -2,24 +2,64 @@ header h1 {
   padding: 10px 20px;
 }
 
+body {
+  max-width: 970px !important;
+}
 
 .container {
   background-color: #100a04;
   color: #d1cec2;
 }
-.product-container-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-}
 
-.product-container {
+.lesson-container {
   background-color: ghostwhite;
   color: #1e0606;
   box-shadow: 0px 5px 10px 0px rgb(211 209 209 / 70%);
   padding: 20px;
   margin: 10px;
   border-radius: 10px;
-  display: inline-block;
+}
+
+.cart {
+  padding: 20px 50px;
+}
+
+.boxes {
+  margin-top: 20px;
+}
+
+.verify-container {
+  display: flex;
+  align-items: center;
+}
+
+.verify {
+  margin-top: 20px;
+  width: 70%;
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.42857143;
+  color: #333;
+  word-break: break-all;
+  word-wrap: break-word;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+.checkout-panel {
+  display: grid;
+}
+
+.submit {
+  margin-top: 20px;
+  float: right;
+}
+
+.pagecheckout {
+  padding: 20px 50px;
 }
 
 .description {
@@ -27,12 +67,38 @@ header h1 {
   margin-top: 50px;
 }
 
-.product {
+.inventory-message {
+  margin-left: 20px;
+  font-weight: bold;
+  padding: 10px 16px;
+  font-size: 18px;
+}
+
+
+.lesson {
   margin-top: 30px;
   margin-left: 20px;
   max-height: 300px;
   max-width: 50%;
 
+}
+
+.rating-active:before {
+  content: "\2605";
+  position: absolute;
+}
+
+.rating {
+  display: inline;
+  margin-left: 10px;
+  margin-top: 10px;
+  float: right;
+}
+
+.rating>span {
+  display: inline-block;
+  position: relative;
+  width: 1.1em;
 }
 
 .column {
@@ -43,10 +109,10 @@ header h1 {
   display: flex;
 }
 
-.product-detail-pair {
+.lesson-detail-pair {
   display: flex;
 
-  .product-label {
+  .lesson-label {
     width: 30%;
     font-weight: bold;
   }
@@ -56,12 +122,44 @@ header h1 {
   display: inline-block;
   margin-left: 2em;
 }
-.product-list-title {
+
+.add-cart-button-container {
+  display: flex;
+  justify-content: center;
+
+  .add-cart-button {
+    width: 30%;
+  }
+}
+
+.sold-out {
+  color: #d15a5a;
+}
+
+.available {
+  color: #2fc379;
+}
+
+.few-left {
+  color: #e9ba2e;
+}
+
+.lesson-list-title {
   display: flex;
   justify-content: center;
   font-weight: bold;
   color: #eba80b;
   font-size: xx-large;
+}
+
+.checkout-form-column {
+  width: 50%;
+}
+
+.input-error {
+  font-size: x-small;
+  float: right;
+  color: #5f1010;
 }
 
 .app-header {
@@ -109,4 +207,32 @@ header h1 {
   border-radius: 15px;
   background-color: whitesmoke;
   padding: 5px;
+}
+
+.sort-wrapper {
+  display: flex;
+  align-content: end;
+  justify-content: end;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.sort-label {
+  float: right !important;
+}
+
+.sort-options {
+  width: 16%;
+  color: #100a04;
+  border-radius: 25px;
+  float: right !important;
+  margin-left: 5px;
+}
+
+.sort-order {
+  width: 10%;
+  color: #100a04;
+  border-radius: 25px;
+  float: right !important;
+  margin-left: 5px;
 }

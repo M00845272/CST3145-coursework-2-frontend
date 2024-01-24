@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>productCart</title>
+  <title>LessonCart</title>
   <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
     integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -19,55 +19,204 @@
           <div class="navbar-header">
             <h1>{{ sitename }}</h1>
           </div>
+          <div class="nav navbar-nav navbar-right cart">
+            <button type="button" class="btn btn-primary btn-lg" v-if="canCheckout()" v-on:click="showCheckout">
+              <span class="glyphicon glyphicon-shopping-cart">{{ cartItemCount}}</span> Checkout
+            </button>
+            <button type="button" disabled="true" class="btn btn-primary btn-lg" v-else="canCheckout()"
+              v-on:click="showCheckout">
+              <span class="glyphicon glyphicon-shopping-cart">{{ cartItemCount}}</span> Checkout
+            </button>
+          </div>
         </div>
       </header>
       <main>
-        <div v-if="showProducts">
-          <div class="product-list-title">
-            Popular Products
+        <div v-if="showLesson">
+          <div class="lesson-list-title">
+            Lesson Catalog
           </div>
           <div class="search-wrapper">
-            <input class="search-bar"  autocomplete="off"  type="search" v-model="search" placeholder="Type here to search product" />
+            <input class="search-bar"  autocomplete="off"  type="search" v-model="search" placeholder="Type here to search lesson" />
           </div>
-          <div class="product-container-wrapper">
-            <div class="product-container" v-for="product in products">
-              <div class="row">
-                <div class="column">
-                  <div class="col-md-6 col-md-offset-0 description">
-                    <div class="product-detail-pair">
-                      <p class="product-label">Subject: </p>
-                      <p class="tab" v-text="product.subject"></p>
-                    </div>
-                    <div class="product-detail-pair">
-                      <p class="product-label">Location: </p>
-                      <p class="tab" v-text="product.location"></p>
-                    </div>
-                    <div class="product-detail-pair">
-                      <p class="product-label">Price: </p>
-                      <p class="tab price"> {{product.price | formatPrice}}</p>
+          <div class="sort-wrapper">     
+            <span class="sort-label">Sort: </span>
+            <select v-model="sortOption" class="form-control sort-options">
+              <option v-for="(option, key) in sortOptions" v-bind:value="key">
+                {{option}}
+              </option>
+            </select>
+            <select v-model="sortOrder" class="form-control sort-order">
+              <option v-for="(option, key) in sortOrderOptions" v-bind:value="key">
+                {{option}}
+              </option>
+            </select>
+          </div>
+          <div class="lesson-container" v-for="lesson in lessons">
+            <div class="row">
+              <div class="column">
+                <div class="col-md-6 col-md-offset-0 description">
+                  <div class="lesson-detail-pair">
+                    <p class="lesson-label">Subject: </p>
+                    <p class="tab" v-text="lesson.subject"></p>
+                  </div>
+                  <div class="lesson-detail-pair">
+                    <p class="lesson-label">Location: </p>
+                    <p class="tab" v-text="lesson.location"></p>
+                  </div>
+                  <div class="lesson-detail-pair">
+                    <p class="lesson-label">Price: </p>
+                    <p class="tab price"> {{lesson.price | formatPrice}}</p>
+                  </div>
+                  <div class="lesson-detail-pair">
+                    <p class="lesson-label">Rating: </p>
+                    <div class="tab">
+                      <span v-bind:class="{'rating-active' :checkRating(n, lesson)}" v-for="n in 5">☆
+                      </span>
                     </div>
                   </div>
                 </div>
-                <div class="column">
-                  <div class="col-md-5 col-md-offset-0">
-                    <figure>
-                      <img class="product" v-bind:src="product.image">
-                    </figure>
-                  </div>
-                </div>
-                <!-- end of col-md-6-->
               </div>
-              <!-- end of row-->
+              <div class="column">
+                <div class="col-md-5 col-md-offset-0">
+                  <figure>
+                    <img class="lesson" v-bind:src="lesson.image">
+                  </figure>
+                </div>
+              </div>
+              <!-- end of col-md-6-->
             </div>
+            <div class=" add-cart-button-container">
+              <button class=" btn btn-primary btn-lg add-cart-button" v-on:click="addToCart(lesson)"
+                v-if="canAddToCart(lesson)">Add to cart</button>
+              <button disabled="true" class=" btn btn-primary btn-lg add-cart-button" v-else>Add to cart</button>
+              <span class="inventory-message sold-out"
+                v-if="lesson.availableInventory - cartCount(lesson.id) === 0">Sold
+                Out!
+              </span>
+              <span class="inventory-message few-left"
+                v-else-if="lesson.availableInventory - cartCount(lesson.id) < 5">
+                Hurry!! Only {{lesson.availableInventory - cartCount(lesson.id)}} left
+              </span>
+              <span class="inventory-message available" v-else>{{lesson.availableInventory - cartCount(lesson.id)}}
+                lessons available
+              </span>
+            </div>
+            <!-- end of row-->
           </div>
-          
           <!-- end of v-for-->
         </div>
-        <!-- end of showproduct-->
+        <!-- end of showlesson-->
+        <div v-else>
+          <div class="lesson-list-title">
+            Cart Details
+          </div>
+          <div class="lesson-container" v-for="lesson in cartLessons">
+            <div class="row">
+              <div class="column">
+                <div class="col-md-6 col-md-offset-0 description">
+                  <div class="lesson-detail-pair">
+                    <p class="lesson-label">Subject: </p>
+                    <p class="tab" v-text="lesson.subject"></p>
+                  </div>
+                  <div class="lesson-detail-pair">
+                    <p class="lesson-label">Location: </p>
+                    <p class="tab" v-text="lesson.location"></p>
+                  </div>
+                  <div class="lesson-detail-pair">
+                    <p class="lesson-label">Price: </p>
+                    <p class="tab price"> {{lesson.price | formatPrice}}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="col-md-5 col-md-offset-0">
+                  <figure>
+                    <img class="lesson" v-bind:src="lesson.image">
+                  </figure>
+                </div>
+              </div>
+              <!-- end of col-md-6-->
+            </div>
+            <div class=" add-cart-button-container">
+              <button class=" btn btn-primary btn-lg add-cart-button" v-on:click="removeFromCart(lesson)">Remove from
+                cart</button>
+            </div>
+            <!-- end of row-->
+          </div>
+          <!-- end of v-for-->
+          <!-- end of cart-->
+          <div>
+            <div class="col-md-10 col-md-offset-1">
+              <div class="panel panel-info">
+                <div class="panel-heading">Checkout</div>
+                <div class="panel-body checkout-panel">
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <h4>
+                        <strong>Enter Your Information</strong>
+                      </h4>
+                    </div>
+                  </div>
+                  <div class="form-group lesson-detail-pair">
+                    <div class="col-md-6 checkout-form-column">
+                      <strong>First Name:</strong>
+                      <input v-model.trim="order.firstName" class="form-control" />
+                      <p v-if="order.validation.firstNameInvalid == true" class="input-error">Enter Valid First Name</p>
+                    </div>
+                    <div class="col-md-6 checkout-form-column">
+                      <strong>Last Name:</strong>
+                      <input v-model.trim="order.lastName" class="form-control" />
+                      <p v-if="order.validation.lastNameInvalid == true" class="input-error">Enter Valid Last Name</p>
+                    </div>
+                  </div>
+                  <div class="form-group lesson-detail-pair">
+                    <div class="col-md-6 checkout-form-column">
+                      <strong>Email:</strong>
+                      <input v-model.trim="order.email" class="form-control" />
+                      <p v-if="order.validation.emailInvalid == true" class="input-error">Enter Valid Email</p>
+                    </div>
+                    <div class="col-md-6 checkout-form-column">
+                      <strong>Phone:</strong>
+                      <input v-model.trim="order.phone" type="number" class="form-control" />
+                      <p v-if="order.validation.phoneInvalid == true" class="input-error">Enter Valid Phone</p>
+                    </div>
+                  </div>
+                  <!-- end of form-group-->
+                  <div class="verify-container">
+                    <div class="col-md-12 verify">
+                      <div>
+                        <strong>First Name:</strong> {{order.firstName}}<br />
+                        <strong>Last Name:</strong> {{order.lastName}}<br />
+                        <strong>Email:</strong> {{order.email}}<br />
+                        <strong>Phone:</strong> {{order.phone}}<br />
+                      </div>
+                    </div>
+                    <!-- end of col-md-12 verify-->
+                    <div class="form-group" style="width: 30%;">
+                      <div class="col-md-6">
+                        <button type="submit" style="width: 100%;" class="btn btn-primary submit" v-if="canPlaceOrder()"
+                          v-on:click="submitForm">Place
+                          Order</button>
+                        <button type="submit" disabled="true" style="width: 100%;" class="btn btn-primary submit" v-else
+                          v-on:click="submitForm">Place
+                          Order</button>
+                      </div>
+                      <!-- end of col-md-6-->
+                    </div>
+                  </div>
+                </div>
+                <!--end of panel-body-->
+              </div>
+              <!--end of panel panel-info-->
+            </div>
+            <!--end of col-md-10 col-md-offset-1-->
+          </div>
+          <!--end of row-->
+        </div>
       </main>
     </div>
     <!-- end of app-->
   </div>
-  <script src="bestDeals.js"></script>
+  <script src="lessonCart.js"></script>
 </body>
 </html>
