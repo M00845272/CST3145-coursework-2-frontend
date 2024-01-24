@@ -79,7 +79,7 @@
               <div class="column">
                 <div class="col-md-5 col-md-offset-0">
                   <figure>
-                    <img class="lesson" v-bind:src="lesson.image">
+                    <img class="lesson" v-bind:src=getImageSrc(lesson.image)>
                   </figure>
                 </div>
               </div>
@@ -131,7 +131,7 @@
               <div class="column">
                 <div class="col-md-5 col-md-offset-0">
                   <figure>
-                    <img class="lesson" v-bind:src="lesson.image">
+                    <img class="lesson" v-bind:src="getImageSrc(lesson.image)">
                   </figure>
                 </div>
               </div>

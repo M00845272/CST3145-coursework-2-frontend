@@ -111,6 +111,9 @@ var webstore = new Vue({
     checkRating(n, myLesson) {
       return myLesson.rating - n >= 0;
     },
+    getImageSrc(imagePath) {
+      return "http://localhost:3000/lesson/images/"+imagePath;
+    },
     addToCart(aLesson) {
       this.cart.push(aLesson.id);
     },
