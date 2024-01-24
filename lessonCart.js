@@ -36,24 +36,26 @@ var webstore = new Vue({
   },
   watch: {
     sortOption() {
-      this.getLessons();
+      this.searchLessons();
     },
     sortOrder() {
-      this.getLessons();
+      this.searchLessons();
     },
     search() {
-      this.getLessons();
+      this.searchLessons();
     }
   },
   methods: {
-    getLessons() {
-      fetch("http://localhost:3000/lessons").then(
+    searchLessons() {
+      fetch("http://localhost:3000/search?searchKeyword="+webstore.search).then(
         function (response) {
           response.json().then(
             function (json) {
               var data = json;
               if (data.length > 0) {
                 let lessonsArray = data.slice(0);
+
+                //sort lessons
                 var sortField = webstore.sortOption;
                 var selectedSortOrder = webstore.sortOrder;
 
@@ -86,11 +88,6 @@ var webstore = new Vue({
                     return selectedSortOrder == "DES" ? -1 : 1;
                   return 0;
                 }
-
-                lessonsArray = lessonsArray.filter(p => {
-                  return p.subject.toLowerCase().indexOf(webstore.search.toLowerCase()) != -1 ||
-                    p.location.toLowerCase().indexOf(webstore.search.toLowerCase()) != -1;
-                });
                 webstore.lessons = lessonsArray.sort(compare);
               }
             }
