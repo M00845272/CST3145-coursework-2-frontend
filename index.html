@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>productCart</title>
+  <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="assets/css/app.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.js"></script>
+  <meta charset="UTF-8">
+</head>
+
+<body>
+  <div class="container">
+    <div id="app">
+      <header>
+        <div class="navbar navbar-expand-lg bg-dark navbar-dark app-header">
+          <div class="navbar-header">
+            <h1>{{ sitename }}</h1>
+          </div>
+        </div>
+      </header>
+      <main>
+        <div v-if="showProducts">
+          <div class="product-list-title">
+            Popular Products
+          </div>
+          <div class="search-wrapper">
+            <input class="search-bar"  autocomplete="off"  type="search" v-model="search" placeholder="Type here to search product" />
+          </div>
+          <div class="product-container-wrapper">
+            <div class="product-container" v-for="product in products">
+              <div class="row">
+                <div class="column">
+                  <div class="col-md-6 col-md-offset-0 description">
+                    <div class="product-detail-pair">
+                      <p class="product-label">Subject: </p>
+                      <p class="tab" v-text="product.subject"></p>
+                    </div>
+                    <div class="product-detail-pair">
+                      <p class="product-label">Location: </p>
+                      <p class="tab" v-text="product.location"></p>
+                    </div>
+                    <div class="product-detail-pair">
+                      <p class="product-label">Price: </p>
+                      <p class="tab price"> {{product.price | formatPrice}}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div class="col-md-5 col-md-offset-0">
+                    <figure>
+                      <img class="product" v-bind:src="product.image">
+                    </figure>
+                  </div>
+                </div>
+                <!-- end of col-md-6-->
+              </div>
+              <!-- end of row-->
+            </div>
+          </div>
+          
+          <!-- end of v-for-->
+        </div>
+        <!-- end of showproduct-->
+      </main>
+    </div>
+    <!-- end of app-->
+  </div>
+  <script src="bestDeals.js"></script>
+</body>
+</html>
