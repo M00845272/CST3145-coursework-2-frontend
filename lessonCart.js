@@ -47,7 +47,7 @@ var webstore = new Vue({
   },
   methods: {
     searchLessons() {
-      fetch("http://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/search?searchKeyword="+webstore.search).then(
+      fetch("https://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/search?searchKeyword="+webstore.search).then(
         function (response) {
           response.json().then(
             function (json) {
@@ -112,7 +112,7 @@ var webstore = new Vue({
       return myLesson.rating - n >= 0;
     },
     getImageSrc(imagePath) {
-      return "http://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/lesson/images/" + imagePath;
+      return "https://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/lesson/images/" + imagePath;
     },
     addToCart(aLesson) {
       this.cart.push(aLesson.id);
@@ -150,7 +150,7 @@ var webstore = new Vue({
         "lessons": lessons
       }
       // Send POST request using Fetch API
-      fetch('http://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/order', {
+      fetch('https://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ var webstore = new Vue({
     },
     updateAvailableSpaces(cart) {
        // Send PUT request using Fetch API
-       fetch('http://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/lesson/update_availability', {
+       fetch('https://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/lesson/update_availability', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -298,7 +298,7 @@ var webstore = new Vue({
 
   },
   created: function () {
-    fetch("http://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/lessons").then(
+    fetch("https://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/lessons").then(
       function (response) {
         response.json().then(
           function (json) {
