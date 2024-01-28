@@ -32,7 +32,8 @@ var webstore = new Vue({
       }
     },
     lessons: {},
-    cart: []
+    cart: [],
+    URL: 'http://localhost:3000'
   },
   watch: {
     sortOption() {
@@ -47,48 +48,18 @@ var webstore = new Vue({
   },
   methods: {
     searchLessons() {
-      fetch("https://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/search?searchKeyword="+webstore.search).then(
+      var sortField = webstore.sortOption;
+      var selectedSortOrder = webstore.sortOrder;
+      let serachKeyword = webstore.search || '*';
+      let searchURL = webstore.URL+"/lessons/search/"+serachKeyword+"/20/"+sortField.toLowerCase()+"/"+selectedSortOrder
+      fetch(searchURL).then(
         function (response) {
           response.json().then(
             function (json) {
               var data = json;
               if (data.length > 0) {
-                let lessonsArray = data.slice(0);
-
-                //sort lessons
-                var sortField = webstore.sortOption;
-                var selectedSortOrder = webstore.sortOrder;
-
-                var cartCountMethod = webstore.cartCount;
-
-                function compare(a, b) {
-                  var aValue = a.subject;
-                  var bValue = b.subject;
-
-                  if (sortField == "SUBJECT") {
-                    aValue = a.subject.toLowerCase();
-                    bValue = b.subject.toLowerCase();
-                  } else if (sortField == "LOCATION") {
-                    aValue = a.location.toLowerCase();
-                    bValue = b.location.toLowerCase();
-                  } else if (sortField == "PRICE") {
-                    aValue = a.price;
-                    bValue = b.price;
-                  } else if (sortField == "RATING") {
-                    aValue = a.rating;
-                    bValue = b.rating;
-                  } else if (sortField == "AVAILABILITY") {
-                    aValue = a.availableInventory - cartCountMethod(a.id);
-                    bValue = b.availableInventory - cartCountMethod(b.id);
-                  }
-
-                  if (aValue < bValue)
-                    return selectedSortOrder == "DES" ? 1 : -1;
-                  if (aValue > bValue)
-                    return selectedSortOrder == "DES" ? -1 : 1;
-                  return 0;
-                }
-                webstore.lessons = lessonsArray.sort(compare);
+                let lessonsArray = data.slice(0);               
+                webstore.lessons = lessonsArray;
               }
             }
           );
@@ -112,7 +83,7 @@ var webstore = new Vue({
       return myLesson.rating - n >= 0;
     },
     getImageSrc(imagePath) {
-      return "https://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/lesson/images/" + imagePath;
+      return webstore.URL+"/lesson/images/" + imagePath;
     },
     addToCart(aLesson) {
       this.cart.push(aLesson.id);
@@ -150,7 +121,7 @@ var webstore = new Vue({
         "lessons": lessons
       }
       // Send POST request using Fetch API
-      fetch('https://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/order', {
+      fetch(webstore.URL+'/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -179,7 +150,7 @@ var webstore = new Vue({
     },
     updateAvailableSpaces(cart) {
        // Send PUT request using Fetch API
-       fetch('https://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/lesson/update_availability', {
+       fetch(webstore.URL+'/lesson/update_availability', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -298,7 +269,7 @@ var webstore = new Vue({
 
   },
   created: function () {
-    fetch("https://CST3145-coursework-2-env.eba-jrztgvz6.eu-west-2.elasticbeanstalk.com/lessons").then(
+    fetch(this.URL+"/lessons/20/subject/asc").then(
       function (response) {
         response.json().then(
           function (json) {
