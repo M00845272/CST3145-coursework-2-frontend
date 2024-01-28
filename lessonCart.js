@@ -10,7 +10,7 @@ var webstore = new Vue({
     sortOrder: "ASC",
     sortOptions: {
       SUBJECT: 'Subject',
-      AVAILABILITY: 'Availability',
+      availableInventory: 'Availability',
       LOCATION: 'Location',
       PRICE: 'Price',
       RATING: 'Rating'
@@ -34,31 +34,55 @@ var webstore = new Vue({
     lessons: {},
     cart: [],
     URL: 'https://lessoncart-backend-env.eba-zpnrayrg.eu-west-2.elasticbeanstalk.com'
+    //URL: 'http://localhost:3000'
   },
   watch: {
     sortOption() {
-      this.searchLessons();
+      this.loadLessons();
     },
     sortOrder() {
-      this.searchLessons();
+      this.loadLessons();
     },
     search() {
-      this.searchLessons();
+      this.loadLessons();
     }
   },
   methods: {
+    loadLessons(){
+      if (webstore.search == undefined || webstore.search == null || webstore.search == '') {
+        webstore.getLessons();
+      } else {
+        webstore.searchLessons();
+      }
+    },
+    getLessons() {
+      var sortField = webstore.sortOption;
+      var selectedSortOrder = webstore.sortOrder;
+      let lessonsURL = webstore.URL + "/lessons/20/" + sortField.toLowerCase() + "/" + selectedSortOrder.toLowerCase()
+      fetch(lessonsURL).then(
+        function (response) {
+          response.json().then(
+            function (json) {
+              console.log(json);
+              webstore.lessons = json;
+            }
+          )
+        }
+      );
+    },
     searchLessons() {
+      webstore.lessons = [];
       var sortField = webstore.sortOption;
       var selectedSortOrder = webstore.sortOrder;
       let serachKeyword = webstore.search || '*';
-      let searchURL = webstore.URL+"/lessons/search/"+serachKeyword+"/20/"+sortField.toLowerCase()+"/"+selectedSortOrder
+      let searchURL = webstore.URL + "/lessons/search/" + serachKeyword + "/20/" + sortField.toLowerCase() + "/" + selectedSortOrder.toLowerCase()
       fetch(searchURL).then(
         function (response) {
           response.json().then(
             function (json) {
               var data = json;
               if (data.length > 0) {
-                let lessonsArray = data.slice(0);               
+                let lessonsArray = data.slice(0);
                 webstore.lessons = lessonsArray;
               }
             }
@@ -83,7 +107,7 @@ var webstore = new Vue({
       return myLesson.rating - n >= 0;
     },
     getImageSrc(imagePath) {
-      return webstore.URL+"/lesson/images/" + imagePath;
+      return webstore.URL + "/lesson/images/" + imagePath;
     },
     addToCart(aLesson) {
       this.cart.push(aLesson.id);
@@ -121,7 +145,7 @@ var webstore = new Vue({
         "lessons": lessons
       }
       // Send POST request using Fetch API
-      fetch(webstore.URL+'/orders', {
+      fetch(webstore.URL + '/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -149,8 +173,8 @@ var webstore = new Vue({
         });
     },
     updateAvailableSpaces(cart) {
-       // Send PUT request using Fetch API
-       fetch(webstore.URL+'/lesson/update_availability', {
+      // Send PUT request using Fetch API
+      fetch(webstore.URL + '/lesson/update_availability', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -269,7 +293,7 @@ var webstore = new Vue({
 
   },
   created: function () {
-    fetch(this.URL+"/lessons/20/subject/asc").then(
+    fetch(this.URL + "/lessons/20/subject/asc").then(
       function (response) {
         response.json().then(
           function (json) {
