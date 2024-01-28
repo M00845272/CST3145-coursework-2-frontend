@@ -141,7 +141,7 @@ var webstore = new Vue({
           webstore.order = this.getDefaultOrderDetails();
           webstore.updateAvailableSpaces(lessons);
           alert('Order Placed Successfully');
-          webstore.getLessons();
+          webstore.searchLessons();
         })
         .catch(error => {
           console.error('Error creating order:', error);
